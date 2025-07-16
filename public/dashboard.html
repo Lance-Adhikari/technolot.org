@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technolot Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0d0d0d;
+      color: #f0f0f0;
+      padding: 0 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    header .email {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #00ffae;
+      margin-bottom: 16px;
+    }
+
+    .stat-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      border-bottom: 1px solid #222;
+    }
+
+    .stat-list li:last-child {
+      border-bottom: none;
+    }
+
+    .graph-placeholder {
+      height: 160px;
+      background: linear-gradient(to right, #121212, #181818);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dashboard</h1>
+    <span class="email">dropnox3412@gmail.com</span>
+  </header>
+
+  <div class="dashboard">
+    <div class="card">
+      <h2>Overview</h2>
+      <ul class="stat-list">
+        <li><span>Current Balance:</span><span>$72.02</span></li>
+        <li><span>Views:</span><span>96,233</span></li>
+        <li><span>Unlocks:</span><span>45,265</span></li>
+        <li><span>Earnings:</span><span>$116.97</span></li>
+        <li><span>Task Completions:</span><span>68,986</span></li>
+        <li><span>Unlock Rate:</span><span>47%</span></li>
+        <li><span>CPM:</span><span>$25.77</span></li>
+        <li><span>Engagement Rate:</span><span>71%</span></li>
+        <li><span>Average EPV:</span><span>$0.0121</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Performance Graph</h2>
+      <div class="graph-placeholder">[ Graph will go here ]</div>
+    </div>
+
+    <div class="card">
+      <h2>Pages</h2>
+      <ul class="stat-list">
+        <li><span>/HbA2Yj0zH</span><span>15k views</span></li>
+        <li><span>/JhO5eVyA9</span><span>13k views</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Destinations</h2>
+      <ul class="stat-list">
+        <li><span>mediafire.com/xyz1</span><span>12%</span></li>
+        <li><span>mediafire.com/xyz2</span><span>12%</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Redirect to login page if not logged in (frontend protection)
+    fetch('/auth-check')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.authenticated) {
+          window.location.href = '/login.html';
+        }
+      })
+      .catch(() => {
+        window.location.href = '/login.html';
+      });
+  </script>
+</body>
+</html>

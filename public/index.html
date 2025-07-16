@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technolot - Link Unlock</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      background-image: radial-gradient(circle at top left, #1a1a1a, #121212);
+    }
+
+    .container {
+      background-color: #1e1e1e;
+      border-radius: 12px;
+      padding: 30px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      border: 1px solid #2c2c2c;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: #00ffae;
+      text-shadow: 0 0 4px #00ffae40;
+    }
+
+    p.subtext {
+      color: #bbbbbb;
+      font-size: 0.92rem;
+      margin-bottom: 25px;
+    }
+
+    .task {
+      background-color: #262626;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .task:hover {
+      background-color: #303030;
+      transform: scale(1.02);
+    }
+
+    .task-title {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .task-desc {
+      font-size: 0.85rem;
+      color: #cccccc;
+    }
+
+    .arrow {
+      font-size: 1.3rem;
+      color: #888;
+    }
+
+    .unlock-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: #666;
+      cursor: not-allowed;
+      margin-top: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .unlock-btn.enabled {
+      background-color: #00ffae;
+      color: #000;
+      cursor: pointer;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Technolot - Link Unlock</h1>
+    <p class="subtext">To reach the target page, complete the following steps:</p>
+
+    <div class="task" onclick="completeStep(0)">
+      <div>
+        <div class="task-title">1. Download the Best Gaming Browser</div>
+        <div class="task-desc">Install Opera GX</div>
+      </div>
+      <div class="arrow">&gt;</div>
+    </div>
+
+    <div class="task" onclick="completeStep(1)">
+      <div>
+        <div class="task-title">2. Unlock your reward in seconds</div>
+        <div class="task-desc">Complete a Quick Offer and get your Bonus</div>
+      </div>
+      <div class="arrow">&gt;</div>
+    </div>
+
+    <button id="unlockBtn" class="unlock-btn" disabled>🔒 Unlock content</button>
+  </div>
+
+  <div class="footer">Powered by Technolot | Your trusted texture pack YouTuber</div>
+
+  <script>
+    let stepsCompleted = [false, false];
+
+    function completeStep(index) {
+      stepsCompleted[index] = true;
+
+      if (stepsCompleted.every(Boolean)) {
+        const btn = document.getElementById('unlockBtn');
+        btn.classList.add('enabled');
+        btn.disabled = false;
+        btn.innerHTML = '✅ Unlock content';
+        btn.addEventListener('click', () => {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          setTimeout(() => {
+            window.location.href = 'https://www.mediafire.com/yourpacklink'; // Replace with real link
+          }, 800);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
