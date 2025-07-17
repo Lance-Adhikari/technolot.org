@@ -43,6 +43,8 @@ app.get('/', (req, res) => {
   }
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Login route
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
