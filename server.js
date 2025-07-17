@@ -1,6 +1,10 @@
-// Redirect base URL to login page
-app.get('/', (req, res) => {
-  res.redirect('/login.html');
+// Redirect base if no index.html
+app.get('/', (req, res, next) => {
+  if (req.session.loggedIn) {
+    res.redirect('/dashboard.html');
+  } else {
+    res.redirect('/login.html');
+  }
 });
 
 // server.js
