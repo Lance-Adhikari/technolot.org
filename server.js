@@ -1,3 +1,8 @@
+// Redirect base URL to login page
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
 // server.js
 require('dotenv').config();
 const express = require('express');
@@ -20,11 +25,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-
-// Redirect base URL to login page
-app.get('/', (req, res) => {
-  res.redirect('/login.html');
-});
 
 // Serve login page
 app.get('/login.html', (req, res) => {
