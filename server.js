@@ -21,12 +21,17 @@ app.use(session({
   saveUninitialized: true
 }));
 
+// Redirect base URL to login page
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
 // Serve login page
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Serve dashboard page (with protection)
+// Serve dashboard only if logged in
 app.get('/dashboard.html', (req, res) => {
   if (!req.session.loggedIn) {
     return res.redirect('/login.html');
