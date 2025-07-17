@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Technolot Dashboard</title>
   <style>
     body {
@@ -10,9 +10,34 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #0f0f0f;
       color: white;
+      display: flex;
     }
 
-    .dashboard {
+    .sidebar {
+      width: 70px;
+      background-color: #0a0a0a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+    }
+
+    .sidebar-icon {
+      width: 24px;
+      height: 24px;
+      margin: 20px 0;
+      cursor: pointer;
+      filter: grayscale(100%) brightness(1.5);
+      transition: filter 0.3s;
+    }
+
+    .sidebar-icon:hover, .active {
+      filter: none;
+    }
+
+    .main-content {
+      flex: 1;
       padding: 20px;
     }
 
@@ -71,37 +96,42 @@
       border-radius: 6px;
     }
 
-    .modal-content .btn-group {
+    .modal-content .buttons {
       display: flex;
+      justify-content: space-between;
       gap: 10px;
-      margin-top: 20px;
     }
 
     .modal-content button {
+      margin-top: 20px;
       flex: 1;
       padding: 12px;
+      background: #00ffae;
       border: none;
+      color: black;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 1rem;
     }
 
-    .create-btn {
-      background: #00ffae;
-      color: black;
-    }
-
-    .cancel-btn {
+    .modal-content .cancel-btn {
       background: #444;
       color: white;
     }
   </style>
 </head>
 <body>
-  <div class="dashboard">
-    <h1>Dashboard</h1>
-    <button class="btn-create" onclick="openModal()">Create link locker</button>
+  <div class="sidebar">
+    <a href="dashboard.html"><img src="/icons/home.svg" class="sidebar-icon active" title="Dashboard"></a>
+    <a href="vault.html"><img src="/icons/vault.svg" class="sidebar-icon" title="Vault"></a>
+    <a href="/finances.html"><img src="/icons/finance.svg" class="sidebar-icon" title="Finances"></a>
+  </div>
+
+  <div class="main-content">
+    <div class="dashboard">
+      <h1>Dashboard</h1>
+      <button class="btn-create" onclick="openModal()">Create link locker</button>
+    </div>
   </div>
 
   <div class="modal" id="createModal">
@@ -113,8 +143,8 @@
       <label for="url">Target URL</label>
       <input type="url" id="url" placeholder="https://your-target-url.com">
 
-      <div class="btn-group">
-        <button class="create-btn" onclick="submitLocker()">Create</button>
+      <div class="buttons">
+        <button onclick="submitLocker()">Create</button>
         <button class="cancel-btn" onclick="closeModal()">Cancel</button>
       </div>
     </div>
@@ -136,7 +166,7 @@
         alert('Please fill in both fields.');
         return;
       }
-      console.log('Saving locker:', { title, url }); // backend integration will go here
+      console.log('Saving locker:', { title, url });
       closeModal();
     }
   </script>
