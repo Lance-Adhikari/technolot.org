@@ -1,12 +1,3 @@
-// Redirect base if no index.html
-app.get('/', (req, res, next) => {
-  if (req.session.loggedIn) {
-    res.redirect('/dashboard.html');
-  } else {
-    res.redirect('/login.html');
-  }
-});
-
 // server.js
 require('dotenv').config();
 const express = require('express');
@@ -41,6 +32,15 @@ app.get('/dashboard.html', (req, res) => {
     return res.redirect('/login.html');
   }
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Root redirect — must be after session + static
+app.get('/', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/dashboard.html');
+  } else {
+    res.redirect('/login.html');
+  }
 });
 
 // Login route
