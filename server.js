@@ -1,65 +1,74 @@
-// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const path = require('path');
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const path = require('path');
-
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Dummy credentials for the only admin (you)
+// PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
+
+// Dummy credentials (you can change this in .env)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'fallbacksecret',
   resave: false,
   saveUninitialized: true
 }));
 
-// Serve login page
+// === Routes ===
+
+// Root redirect
+app.get('/', (req, res) => {
+  res.redirect(req.session.loggedIn ? '/dashboard.html' : '/login.html');
+});
+
+// Login page
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Serve dashboard only if logged in
+// Dashboard page
 app.get('/dashboard.html', (req, res) => {
-  if (!req.session.loggedIn) {
-    return res.redirect('/login.html');
-  }
+  if (!req.session.loggedIn) return res.redirect('/login.html');
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Root redirect — must be after session + static
-app.get('/', (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect('/dashboard.html');
-  } else {
-    res.redirect('/login.html');
-  }
-});
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Login route
+// Login handler
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
     req.session.loggedIn = true;
-    res.redirect('/dashboard.html');
-  } else {
-    res.send('<p style="color:red; text-align:center;">Invalid credentials. <a href="/login.html">Try again</a></p>');
+    return res.redirect('/dashboard.html');
   }
+  res.send('<p style="color:red; text-align:center;">Invalid credentials. <a href="/login.html">Try again</a></p>');
 });
 
-// Database
-const pool = require('./db'); // assuming you saved your pool config as db.js
+// Logout handler
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login.html');
+  });
+});
 
+// Auth check for frontend
+app.get('/auth-check', (req, res) => {
+  res.json({ authenticated: !!req.session.loggedIn });
+});
+
+// === API ROUTE: Save link locker ===
 app.post('/api/link-lockers', async (req, res) => {
   const { title, target_url } = req.body;
 
@@ -68,30 +77,18 @@ app.post('/api/link-lockers', async (req, res) => {
   }
 
   try {
-    await pool.query(
-      'INSERT INTO link_lockers (title, target_url, created_at, views) VALUES ($1, $2, NOW(), 0)',
+    const result = await pool.query(
+      'INSERT INTO link_lockers (title, target_url, created_at, views) VALUES ($1, $2, NOW(), 0) RETURNING *',
       [title, target_url]
     );
-    res.json({ success: true });
+    res.json({ success: true, data: result.rows[0] });
   } catch (err) {
     console.error('Database insert error:', err);
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 
-// Logout route
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/login.html');
-  });
-});
-
-// Authentication check for frontend
-app.get('/auth-check', (req, res) => {
-  res.json({ authenticated: !!req.session.loggedIn });
-});
-
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
