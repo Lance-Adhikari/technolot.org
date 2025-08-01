@@ -2,19 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const path = require('path');
-const { Pool } = require('pg');
 require('dotenv').config();
 
 const app = express();
+const pool = require('./db'); // Import PostgreSQL pool here
 const PORT = process.env.PORT || 3000;
 
-// PostgreSQL connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
-
-// Dummy credentials (you can change this in .env)
+// Dummy credentials (can be customized in .env)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
@@ -56,19 +50,19 @@ app.post('/login', (req, res) => {
   res.send('<p style="color:red; text-align:center;">Invalid credentials. <a href="/login.html">Try again</a></p>');
 });
 
-// Logout handler
+// Logout
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
 });
 
-// Auth check for frontend
+// Auth check
 app.get('/auth-check', (req, res) => {
   res.json({ authenticated: !!req.session.loggedIn });
 });
 
-// === API ROUTE: Save link locker ===
+// === API: Create Link Locker ===
 app.post('/api/link-lockers', async (req, res) => {
   const { title, target_url } = req.body;
 
@@ -88,7 +82,7 @@ app.post('/api/link-lockers', async (req, res) => {
   }
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
