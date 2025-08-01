@@ -159,16 +159,59 @@
       document.getElementById('createModal').style.display = 'none';
     }
 
-    function submitLocker() {
+    async function submitLocker() {
       const title = document.getElementById('title').value;
-      const url = document.getElementById('url').value;
-      if (!title || !url) {
+      const target_url = document.getElementById('url').value;
+
+      if (!title || !target_url) {
         alert('Please fill in both fields.');
         return;
       }
-      console.log('Saving locker:', { title, url });
-      closeModal();
+
+      try {
+        const response = await fetch('/api/link-lockers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, target_url })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('Link locker created successfully!');
+          closeModal();
+          // optionally refresh or update UI
+        } else {
+          alert('Error saving link locker.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Something went wrong.');
+      }
     }
+
+    const form = document.getElementById('createLinkForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const target_url = document.getElementById('url').value;
+
+      const response = await fetch('/api/link-lockers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, target_url })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert('Link locker created successfully!');
+        form.reset();
+        // optionally reload or update the UI
+      } else {
+        alert('Error saving link locker.');
+      }
+    });
   </script>
 </body>
 </html>

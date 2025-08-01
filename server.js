@@ -1,5 +1,6 @@
 // server.js
 require('dotenv').config();
+
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -56,6 +57,28 @@ app.post('/login', (req, res) => {
   }
 });
 
+// Database
+const pool = require('./db'); // assuming you saved your pool config as db.js
+
+app.post('/api/link-lockers', async (req, res) => {
+  const { title, target_url } = req.body;
+
+  if (!title || !target_url) {
+    return res.status(400).json({ success: false, error: 'Missing fields' });
+  }
+
+  try {
+    await pool.query(
+      'INSERT INTO link_lockers (title, target_url, created_at, views) VALUES ($1, $2, NOW(), 0)',
+      [title, target_url]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Database insert error:', err);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
 // Logout route
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
@@ -71,3 +94,4 @@ app.get('/auth-check', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
